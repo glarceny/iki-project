@@ -1,0 +1,924 @@
+<?php  
+$whatsapp_link = 'https://chat.whatsapp.com/YOUR_ACTUAL_GROUP_LINK_HERE';  
+?>  
+<!DOCTYPE html>  
+<html lang="id">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">  
+    <title>Tips Belajar - Indonesian Knowledge Institute (IKI)</title>  
+    <link rel="preconnect" href="https://fonts.googleapis.com">  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>  
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">  
+    <style>  
+        * { margin: 0; padding: 0; box-sizing: border-box; }  
+        body {   
+            font-family: 'Inter', sans-serif;   
+            background: #fff;   
+            color: #1f2937;  
+            font-size: 14px;  
+            line-height: 1.5;  
+        }  
+        .header {   
+            background: #fff;   
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);   
+            position: sticky;   
+            top: 0;   
+            z-index: 100;  
+            border-bottom: 2px solid #2563eb;  
+        }  
+        .header-content {   
+            display: flex;   
+            justify-content: space-between;   
+            align-items: center;   
+            padding: 0.75rem 1rem;  
+        }  
+        .logo { display: flex; align-items: center; gap: 0.5rem; }  
+        .logo-circle {   
+            width: 40px;   
+            height: 40px;   
+            background: #111827;   
+            border-radius: 50%;   
+            display: flex;   
+            align-items: center;   
+            justify-content: center;  
+        }  
+        .logo-text h1 { font-size: 0.9rem; font-weight: 800; color: #111827; }  
+        .logo-text p { font-size: 0.7rem; color: #6b7280; font-weight: 600; }  
+        .hamburger {   
+            background: none;   
+            border: none;   
+            width: 40px;   
+            height: 40px;   
+            display: flex;   
+            flex-direction: column;   
+            justify-content: center;   
+            align-items: center;   
+            cursor: pointer;  
+            gap: 4px;  
+        }  
+        .hamburger span {   
+            width: 24px;   
+            height: 3px;   
+            background: #1f2937;   
+            border-radius: 2px;  
+            transition: 0.3s;  
+        }  
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }  
+        .hamburger.active span:nth-child(2) { opacity: 0; }  
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -6px); }  
+        .sidebar {   
+            position: fixed;   
+            top: 0;   
+            right: -280px;   
+            width: 280px;   
+            height: 100vh;   
+            background: #fff;   
+            box-shadow: -2px 0 8px rgba(0,0,0,0.15);   
+            transition: 0.3s;   
+            z-index: 999;  
+            overflow-y: auto;  
+        }  
+        .sidebar.active { right: 0; }  
+        .sidebar-header {   
+            padding: 1rem;   
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);   
+            color: #fff;  
+        }  
+        .sidebar-header h2 { font-size: 1rem; font-weight: 800; margin-bottom: 0.25rem; }  
+        .sidebar-header p { font-size: 0.75rem; opacity: 0.9; }  
+        .nav-links { list-style: none; padding: 0.5rem 0; }  
+        .nav-links a {   
+            display: flex;   
+            align-items: center;   
+            gap: 0.75rem;   
+            padding: 0.875rem 1rem;   
+            color: #374151;   
+            text-decoration: none;   
+            font-weight: 600;  
+            transition: 0.2s;  
+        }  
+        .nav-links a:hover, .nav-links a.active { background: #eff6ff; color: #2563eb; }  
+        .nav-links svg { width: 20px; height: 20px; flex-shrink: 0; }  
+        .overlay {   
+            display: none;   
+            position: fixed;   
+            top: 0;   
+            left: 0;   
+            width: 100%;   
+            height: 100%;   
+            background: rgba(0,0,0,0.5);   
+            z-index: 998;  
+        }  
+        .overlay.active { display: block; }  
+        .hero {   
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);   
+            color: #fff;   
+            padding: 2rem 1rem;  
+            text-align: center;  
+        }  
+        .hero-badge {   
+            display: inline-flex;   
+            align-items: center;   
+            gap: 0.5rem;   
+            background: rgba(255,255,255,0.2);   
+            padding: 0.4rem 1rem;   
+            border-radius: 20px;   
+            font-size: 0.7rem;   
+            font-weight: 700;   
+            margin-bottom: 1rem;  
+        }  
+        .hero h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.75rem; line-height: 1.2; }  
+        .hero p { font-size: 0.875rem; margin-bottom: 1.5rem; opacity: 0.95; }  
+        .hero-stats {   
+            display: flex;   
+            justify-content: center;   
+            gap: 1.5rem;   
+            margin: 1.5rem 0;  
+            flex-wrap: wrap;  
+        }  
+        .stat { text-align: center; }  
+        .stat .num { font-size: 1.75rem; font-weight: 800; display: block; }  
+        .stat .label { font-size: 0.75rem; opacity: 0.9; }  
+        .btn-group { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }  
+        .btn {   
+            display: inline-flex;   
+            align-items: center;   
+            gap: 0.5rem;   
+            padding: 0.75rem 1.25rem;   
+            border-radius: 8px;   
+            text-decoration: none;   
+            font-weight: 700;   
+            font-size: 0.875rem;   
+            transition: 0.2s;  
+            border: none;  
+            cursor: pointer;  
+        }  
+        .btn-primary { background: #fff; color: #2563eb; }  
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }  
+        .btn-secondary { background: transparent; color: #fff; border: 2px solid #fff; }  
+        .btn-secondary:hover { background: #fff; color: #2563eb; }  
+        .btn-whatsapp { background: #10b981; color: #fff; }  
+        .btn-whatsapp:hover { background: #059669; transform: translateY(-2px); }  
+        .btn svg { width: 18px; height: 18px; }  
+        .container { padding: 1rem; max-width: 100%; }  
+        .section-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem; text-align: center; color: #111827; }  
+        .section-subtitle { font-size: 0.875rem; color: #6b7280; text-align: center; margin-bottom: 1rem; }  
+        .cards {   
+            display: grid;   
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));   
+            gap: 0.75rem;   
+            margin-bottom: 1.5rem;  
+        }  
+        .card {   
+            background: #fff;   
+            border-radius: 12px;   
+            padding: 1rem;   
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);   
+            border: 1px solid #e5e7eb;   
+            cursor: pointer;   
+            transition: 0.2s;  
+            min-height: 120px;  
+        }  
+        .card:active { transform: scale(0.98); }  
+        .card:hover { border-color: #2563eb; box-shadow: 0 4px 12px rgba(37,99,235,0.15); }  
+        .card-icon {   
+            width: 36px;   
+            height: 36px;   
+            border-radius: 8px;   
+            display: flex;   
+            align-items: center;   
+            justify-content: center;   
+            margin-bottom: 0.75rem;  
+        }  
+        .card-icon.blue { background: #dbeafe; color: #2563eb; }  
+        .card-icon.green { background: #d1fae5; color: #10b981; }  
+        .card-icon.purple { background: #f3e8ff; color: #7c3aed; }  
+        .card-icon.orange { background: #ffedd5; color: #ea580c; }  
+        .card-icon.red { background: #fee2e2; color: #ef4444; }  
+        .card-icon.yellow { background: #fef08a; color: #eab308; }  
+        .card-icon svg { width: 20px; height: 20px; }  
+        .card-title { font-size: 0.875rem; font-weight: 800; margin-bottom: 0.5rem; color: #111827; }  
+        .card-desc { font-size: 0.75rem; color: #6b7280; line-height: 1.4; }  
+        .modal {   
+            display: none;   
+            position: fixed;   
+            top: 0;   
+            left: 0;   
+            width: 100%;   
+            height: 100%;   
+            background: rgba(0,0,0,0.6);   
+            z-index: 1000;   
+            overflow-y: auto;  
+            padding: 1rem;  
+        }  
+        .modal.active { display: flex; align-items: flex-start; justify-content: center; padding-top: 2rem; }  
+        .modal-content {   
+            background: #fff;   
+            border-radius: 12px;   
+            width: 100%;   
+            max-width: 600px;   
+            max-height: 90vh;   
+            overflow-y: auto;  
+            animation: slideUp 0.3s;  
+            padding-bottom: 1rem;  
+        }  
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }  
+        .modal-header {   
+            padding: 1rem;   
+            border-bottom: 1px solid #e5e7eb;   
+            display: flex;   
+            justify-content: space-between;   
+            align-items: center;  
+            position: sticky;  
+            top: 0;  
+            background: #fff;  
+            z-index: 10;  
+        }  
+        .modal-title { font-size: 1.125rem; font-weight: 800; color: #111827; }  
+        .modal-close {   
+            background: #f3f4f6;   
+            border: none;   
+            width: 32px;   
+            height: 32px;   
+            border-radius: 6px;   
+            cursor: pointer;   
+            display: flex;   
+            align-items: center;   
+            justify-content: center;  
+        }  
+        .modal-body { padding: 1rem; }  
+        .modal-body h3 { font-size: 1rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: #1f2937; }  
+        .modal-body h4 { font-size: 0.875rem; font-weight: 700; margin: 1rem 0 0.5rem; color: #374151; }  
+        .modal-body p { font-size: 0.875rem; color: #4b5563; margin-bottom: 1rem; line-height: 1.6; }  
+        .modal-body ul, .modal-body ol { margin-left: 1.25rem; margin-bottom: 1rem; }  
+        .modal-body li { font-size: 0.875rem; color: #4b5563; margin-bottom: 0.75rem; line-height: 1.5; }  
+        .modal-body .tip-section { margin-bottom: 1.5rem; }  
+        .footer {   
+            background: #111827;   
+            color: #fff;   
+            padding: 2rem 1rem 1rem;   
+            margin-top: 2rem;  
+        }  
+        .footer h3 { font-size: 1rem; font-weight: 800; margin-bottom: 0.75rem; }  
+        .footer p { font-size: 0.8rem; color: #d1d5db; line-height: 1.6; margin-bottom: 1rem; }  
+        .footer-links { list-style: none; margin-bottom: 1rem; }  
+        .footer-links a { color: #d1d5db; text-decoration: none; font-size: 0.85rem; display: block; margin-bottom: 0.5rem; }  
+        .footer-links a:hover { color: #2563eb; }  
+        .footer-bottom { text-align: center; padding-top: 1rem; border-top: 1px solid #374151; color: #9ca3af; font-size: 0.75rem; }  
+        @media (min-width: 640px) {  
+            .hero h1 { font-size: 2rem; }  
+            .section-title { font-size: 1.5rem; }  
+            .cards { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }  
+            .container { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }  
+            .modal-content { max-width: 800px; }  
+        }  
+    </style>  
+</head>  
+<body>  
+    <header class="header">  
+        <div class="header-content">  
+            <div class="logo">  
+                <div class="logo-circle">  
+                    <svg width="28" height="28" viewBox="0 0 50 50" fill="none">  
+                        <text x="5" y="32" font-family="Inter" font-size="28" font-weight="800" fill="#2563eb">i</text>  
+                        <text x="15" y="32" font-family="Inter" font-size="28" font-weight="800" fill="#10b981">K</text>  
+                        <text x="28" y="32" font-family="Inter" font-size="28" font-weight="800" fill="#2563eb">I</text>  
+                    </svg>  
+                </div>  
+                <div class="logo-text">  
+                    <h1>IKI</h1>  
+                    <p>Komunitas Pelajar</p>  
+                </div>  
+            </div>  
+            <button class="hamburger" id="hamburger">  
+                <span></span>  
+                <span></span>  
+                <span></span>  
+            </button>  
+        </div>  
+    </header>  
+    <div class="sidebar" id="sidebar">  
+        <div class="sidebar-header">  
+            <h2>Menu Navigasi</h2>  
+            <p>Indonesian Knowledge Institute</p>  
+        </div>  
+        <nav class="nav-links">  
+            <a href="studygroups.php">  
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>  
+                </svg>  
+                Dashboard  
+            </a>  
+            <a href="tipsbelajar.php" class="active">  
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>  
+                    <path d="M2 17l10 5 10-5"></path>  
+                </svg>  
+                Tips Belajar  
+            </a>  
+            <a href="about.php">  
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                    <circle cx="12" cy="12" r="10"></circle>  
+                    <line x1="12" y1="16" x2="12" y2="12"></line>  
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>  
+                </svg>  
+                Tentang Kami  
+            </a>  
+            <a href="rules.php">  
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>  
+                    <polyline points="14 2 14 8 20 8"></polyline>  
+                </svg>  
+                Aturan Grup  
+            </a>  
+            <a href="faq.php">  
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                    <circle cx="12" cy="12" r="10"></circle>  
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>  
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>  
+                </svg>  
+                FAQ  
+            </a>  
+            <a href="admin.php">  
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>  
+                    <path d="M2 17l10 5 10-5"></path>  
+                </svg>  
+                Jadi Admin  
+            </a>  
+            <a href="report.php">  
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>  
+                    <polyline points="14 2 14 8 20 8"></polyline>  
+                    <line x1="12" y1="18" x2="12" y2="12"></line>  
+                </svg>  
+                Laporan  
+            </a>  
+        </nav>  
+    </div>  
+    <div class="overlay" id="overlay"></div>  
+
+    <main>  
+        <div class="hero">  
+            <div class="hero-badge">  
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>  
+                </svg>  
+                TIPS BELAJAR LENGKAP  
+            </div>  
+            <h1>Tips Belajar Efektif dari IKI</h1>  
+            <p>Kumpulan tips kompleks dan lengkap untuk meningkatkan produktivitas belajar, manajemen waktu, teknik memorisasi, dan banyak lagi. Klik kartu untuk artikel full!</p>  
+            <div class="hero-stats">  
+                <div class="stat"><span class="num">50+</span><span class="label">Tips</span></div>  
+                <div class="stat"><span class="num">24/7</span><span class="label">Akses</span></div>  
+                <div class="stat"><span class="num">100%</span><span class="label">Praktis</span></div>  
+            </div>  
+            <div class="btn-group">  
+                <a href="#" class="btn btn-whatsapp" id="joinBtn">  
+                    <svg fill="currentColor" viewBox="0 0 24 24">  
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>  
+                    </svg>  
+                    Gabung Grup  
+                </a>  
+                <a href="studygroups.php" class="btn btn-secondary">  
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>  
+                    </svg>  
+                    Kembali ke Dashboard  
+                </a>  
+            </div>  
+        </div>  
+
+        <div class="container">  
+            <h2 class="section-title">Tips Belajar Lengkap</h2>  
+            <p class="section-subtitle">Pilih topik untuk membaca artikel full yang kompleks dan mendalam</p>  
+            <div class="cards">  
+                <div class="card" data-modal="manajemen-waktu">  
+                    <div class="card-icon blue">  
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                            <circle cx="12" cy="12" r="10"></circle>  
+                            <polyline points="12 6 12 12 16 14"></polyline>  
+                        </svg>  
+                    </div>  
+                    <div class="card-title">Manajemen Waktu</div>  
+                    <div class="card-desc">Teknik mengatur jadwal belajar efektif</div>  
+                </div>  
+                <div class="card" data-modal="teknik-memorisasi">  
+                    <div class="card-icon green">  
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"></path>  
+                            <rect x="9" y="3" width="6" height="4" rx="1"></rect>  
+                        </svg>  
+                    </div>  
+                    <div class="card-title">Teknik Memorisasi</div>  
+                    <div class="card-desc">Cara menghafal materi dengan cepat</div>  
+                </div>  
+                <div class="card" data-modal="motivasi-belajar">  
+                    <div class="card-icon purple">  
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                            <path d="M13 10V3L4 14h7v7l9-11h-7z"></path>  
+                        </svg>  
+                    </div>  
+                    <div class="card-title">Motivasi Belajar</div>  
+                    <div class="card-desc">Menjaga semangat dan mengatasi malas</div>  
+                </div>  
+                <div class="card" data-modal="belajar-kelompok">  
+                    <div class="card-icon orange">  
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path>  
+                            <circle cx="9" cy="7" r="4"></circle>  
+                            <path d="M23 21v-2a4 4 0 00-3-3.87"></path>  
+                            <path d="M16 3.13a4 4 0 010 7.75"></path>  
+                        </svg>  
+                    </div>  
+                    <div class="card-title">Belajar Kelompok</div>  
+                    <div class="card-desc">Manfaat dan cara efektif</div>  
+                </div>  
+                <div class="card" data-modal="pembelajaran-online">  
+                    <div class="card-icon red">  
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>  
+                            <line x1="8" y1="21" x2="16" y2="21"></line>  
+                            <line x1="12" y1="17" x2="12" y2="21"></line>  
+                        </svg>  
+                    </div>  
+                    <div class="card-title">Pembelajaran Online</div>  
+                    <div class="card-desc">Tips sukses belajar daring</div>  
+                </div>  
+                <div class="card" data-modal="kesehatan-belajar">  
+                    <div class="card-icon yellow">  
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>  
+                        </svg>  
+                    </div>  
+                    <div class="card-title">Kesehatan Saat Belajar</div>  
+                    <div class="card-desc">Menjaga tubuh dan pikiran sehat</div>  
+                </div>  
+                <div class="card" data-modal="teknik-pomodoro">  
+                    <div class="card-icon blue">  
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                            <circle cx="12" cy="12" r="10"></circle>  
+                            <polyline points="12 6 12 12 8 14"></polyline>  
+                        </svg>  
+                    </div>  
+                    <div class="card-title">Teknik Pomodoro</div>  
+                    <div class="card-desc">Belajar dengan interval fokus</div>  
+                </div>  
+                <div class="card" data-modal="mind-mapping">  
+                    <div class="card-icon green">  
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                            <circle cx="12" cy="12" r="3"></circle>  
+                            <path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49m11.31-2.82a10 10 0 010 14.14m-14.14 0a10 10 0 010-14.14"></path>  
+                        </svg>  
+                    </div>  
+                    <div class="card-title">Mind Mapping</div>  
+                    <div class="card-desc">Visualisasi konsep belajar</div>  
+                </div>  
+                <div class="card" data-modal="belajar-aktif">  
+                    <div class="card-icon purple">  
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>  
+                            <polyline points="22,6 12,13 2,6"></polyline>  
+                        </svg>  
+                    </div>  
+                    <div class="card-title">Belajar Aktif</div>  
+                    <div class="card-desc">Metode interaktif dan praktik</div>  
+                </div>  
+                <div class="card" data-modal="mengatasi-stres">  
+                    <div class="card-icon orange">  
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"></path>  
+                        </svg>  
+                    </div>  
+                    <div class="card-title">Mengatasi Stres Belajar</div>  
+                    <div class="card-desc">Strategi coping dan relaksasi</div>  
+                </div>  
+                <!-- Tambahkan lebih banyak card jika diperlukan untuk membuatnya lebih lengkap -->  
+            </div>  
+        </div>  
+    </main>  
+
+    <footer class="footer">  
+        <h3>Indonesian Knowledge Institute</h3>  
+        <p>Komunitas Pelajar Indonesia yang positif, aktif, disiplin, dan bermanfaat dalam bidang pendidikan serta pengembangan diri.</p>  
+        <ul class="footer-links">  
+            <li><a href="about.php">Tentang Kami</a></li>  
+            <li><a href="rules.php">Aturan Lengkap</a></li>  
+            <li><a href="faq.php">FAQ</a></li>  
+            <li><a href="admin.php">Cara Jadi Admin</a></li>  
+        </ul>  
+        <a href="#" class="btn btn-whatsapp" style="width: 100%;" id="footerJoinBtn">  
+            <svg fill="currentColor" viewBox="0 0 24 24">  
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>  
+            </svg>  
+            Gabung Grup WhatsApp  
+        </a>  
+        <div class="footer-bottom">  
+            <p>&copy; <?php echo date('Y'); ?> Indonesian Knowledge Institute (IKI)</p>  
+        </div>  
+    </footer>  
+
+    <!-- Modals untuk Artikel Full -->  
+    <div class="modal" id="manajemen-waktu">  
+        <div class="modal-content">  
+            <div class="modal-header">  
+                <h2 class="modal-title">Manajemen Waktu Belajar</h2>  
+                <button class="modal-close" onclick="closeModal('manajemen-waktu')">  
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                        <line x1="18" y1="6" x2="6" y2="18"></line>  
+                        <line x1="6" y1="6" x2="18" y2="18"></line>  
+                    </svg>  
+                </button>  
+            </div>  
+            <div class="modal-body">  
+                <p>Manajemen waktu adalah kunci utama keberhasilan belajar. Tanpa pengaturan yang baik, waktu bisa terbuang sia-sia. Di sini, kita akan bahas secara mendalam teknik-teknik kompleks untuk mengoptimalkan waktu belajar Anda.</p>  
+                <h3>Pengenalan Manajemen Waktu</h3>  
+                <p>Manajemen waktu melibatkan perencanaan, prioritas, dan eksekusi. Konsep dasar dari Eisenhower Matrix: bagi tugas menjadi penting/mendesak, penting/tidak mendesak, tidak penting/mendesak, dan tidak penting/tidak mendesak. Ini membantu fokus pada yang benar-benar berdampak.</p>  
+                <h3>Teknik Utama</h3>  
+                <h4>1. Time Blocking</h4>  
+                <p>Blok waktu harian untuk aktivitas spesifik. Misalnya, 8-10 pagi untuk belajar matematika, 10-11 istirahat, dll. Gunakan Google Calendar atau planner fisik untuk visualisasi. Keuntungan: mengurangi multitasking yang bisa menurunkan efisiensi hingga 40% menurut penelitian American Psychological Association.</p>  
+                <h4>2. Pareto Principle (80/20 Rule)</h4>  
+                <p>80% hasil dari 20% usaha. Identifikasi 20% materi yang paling penting (seperti konsep inti dalam ujian) dan fokus di sana dulu. Contoh: dalam fisika, pahami hukum Newton terlebih dahulu sebelum variasi kompleks.</p>  
+                <h4>3. Teknik ABCDE</h4>  
+                <p>Label tugas: A (harus dilakukan hari ini), B (penting tapi bisa besok), C (baik dilakukan), D (delegasikan), E (eliminasi). Ini lebih lanjut dari to-do list biasa.</p>  
+                <h3>Alat Bantu</h3>  
+                <ul>  
+                    <li><strong>Trello atau Notion:</strong> Untuk board visual dengan cards tugas, deadline, dan progress tracker.</li>  
+                    <li><strong>Forest App:</strong> Tanam pohon virtual saat fokus; jika keluar app, pohon mati. Integrasi gamification untuk motivasi.</li>  
+                    <li><strong>RescueTime:</strong> Track waktu otomatis dan analisis di mana waktu terbuang (misalnya social media).</li>  
+                </ul>  
+                <h3>Strategi Lanjutan</h3>  
+                <p>Gunakan batching: kelompokkan tugas serupa (misalnya jawab semua email sekali sehari). Kombinasikan dengan habit stacking: tambah belajar ke rutinitas existing, seperti review catatan saat sarapan.</p>  
+                <p>Akhirnya, review mingguan: analisis apa yang berhasil, sesuaikan. Ingat, fleksibilitas penting untuk menghindari burnout.</p>  
+            </div>  
+        </div>  
+    </div>  
+
+    <div class="modal" id="teknik-memorisasi">  
+        <div class="modal-content">  
+            <div class="modal-header">  
+                <h2 class="modal-title">Teknik Memorisasi Efektif</h2>  
+                <button class="modal-close" onclick="closeModal('teknik-memorisasi')">  
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                        <line x1="18" y1="6" x2="6" y2="18"></line>  
+                        <line x1="6" y1="6" x2="18" y2="18"></line>  
+                    </svg>  
+                </button>  
+            </div>  
+            <div class="modal-body">  
+                <p>Memorisasi bukan hanya menghafal rote, tapi memahami dan menyimpan informasi jangka panjang. Artikel ini mengeksplorasi teknik kompleks berdasarkan psikologi kognitif.</p>  
+                <h3>Dasar Memori Manusia</h3>  
+                <p>Memori terdiri dari sensory, short-term, dan long-term. Gunakan spaced repetition untuk transfer ke long-term: ulang materi dengan interval meningkat (hari 1, 3, 7, 30).</p>  
+                <h3>Teknik Utama</h3>  
+                <h4>1. Mnemonics</h4>  
+                <p>Buat akronim atau cerita absurd. Contoh: untuk urutan planet, "My Very Educated Mother Just Served Us Noodles" (Mercury, Venus, dll.). Untuk rumit, gunakan method of loci: bayangkan informasi di lokasi familiar seperti rumah Anda.</p>  
+                <h4>2. Chunking</h4>  
+                <p>Kelompok informasi: nomor telepon 08123456789 jadi 081-234-567-89. Untuk pelajaran, bagi bab besar jadi sub-bagian kecil, hubungkan dengan diagram.</p>  
+                <h4>3. Active Recall</h4>  
+                <p>Jangan baca ulang, tapi test diri sendiri. Gunakan flashcards Anki dengan algoritma SRS (Spaced Repetition System) yang menyesuaikan interval berdasarkan performa.</p>  
+                <h3>Strategi Lanjutan</h3>  
+                <p>Kombinasikan dengan dual coding: gabung verbal dan visual. Buat infografis untuk konsep abstrak. Gunakan Feynman Technique: jelaskan materi seperti ke anak kecil, identifikasi gap pengetahuan.</p>  
+                <ul>  
+                    <li><strong>Interleaved Practice:</strong> Campur topik berbeda dalam satu sesi untuk meningkatkan retensi hingga 43% (penelitian UCLA).</li>  
+                    <li><strong>Elaborative Rehearsal:</strong> Hubungkan info baru dengan pengetahuan existing, misalnya analogi sejarah dengan kehidupan sehari-hari.</li>  
+                </ul>  
+                <p>Tips tambahan: tidur cukup (memori konsolidasi saat REM sleep), olahraga, dan nutrisi (omega-3 untuk otak).</p>  
+            </div>  
+        </div>  
+    </div>  
+
+    <div class="modal" id="motivasi-belajar">  
+        <div class="modal-content">  
+            <div class="modal-header">  
+                <h2 class="modal-title">Motivasi Belajar yang Kuat</h2>  
+                <button class="modal-close" onclick="closeModal('motivasi-belajar')">  
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                        <line x1="18" y1="6" x2="6" y2="18"></line>  
+                        <line x1="6" y1="6" x2="18" y2="18"></line>  
+                    </svg>  
+                </button>  
+            </div>  
+            <div class="modal-body">  
+                <p>Motivasi adalah bahan bakar belajar. Artikel ini membahas cara membangun motivasi intrinsik dan ekstrinsik secara kompleks.</p>  
+                <h3>Jenis Motivasi</h3>  
+                <p>Intrinsik: dari dalam, seperti rasa penasaran. Ekstrinsik: dari luar, seperti nilai baik atau hadiah. Fokus pada intrinsik untuk keberlanjutan.</p>  
+                <h3>Teknik Membangun Motivasi</h3>  
+                <h4>1. Goal Setting SMART</h4>  
+                <p>Specific, Measurable, Achievable, Relevant, Time-bound. Contoh: "Belajar 2 jam matematika setiap hari untuk naik nilai 20% dalam 1 bulan."</p>  
+                <h4>2. Habit Loop</h4>  
+                <p>Berdasarkan buku Atomic Habits: Cue (pemicu), Craving (keinginan), Response (aksi), Reward (hadiah). Buat cue seperti alarm belajar dengan reward es krim setelah selesai.</p>  
+                <h4>3. Mengatasi Prokrastinasi</h4>  
+                <p>Gunakan 2-Minute Rule: mulai tugas hanya 2 menit, inertia akan lanjutkan. Identifikasi akar seperti perfeksionisme, gunakan cognitive behavioral therapy sederhana: tantang pikiran negatif.</p>  
+                <h3>Strategi Lanjutan</h3>  
+                <ul>  
+                    <li><strong>Growth Mindset (Carol Dweck):</strong> Percaya kemampuan bisa dikembangkan, bukan fixed. Katakan "Saya belum bisa" bukan "Saya tidak bisa".</li>  
+                    <li><strong>Accountability Partner:</strong> Bagikan progress ke teman atau grup IKI untuk dukungan sosial.</li>  
+                    <li><strong>Visualization:</strong> Bayangkan sukses masa depan, seperti lulus universitas impian, untuk boost dopamine.</li>  
+                </ul>  
+                <p>Monitor dengan jurnal: catat pencapaian harian, refleksi apa yang memotivasi. Jika burnout, ambil break mindful seperti meditasi 10 menit.</p>  
+            </div>  
+        </div>  
+    </div>  
+
+    <!-- Tambahkan modal lain secara serupa untuk setiap card -->  
+    <div class="modal" id="belajar-kelompok">  
+        <div class="modal-content">  
+            <div class="modal-header">  
+                <h2 class="modal-title">Belajar Kelompok Efektif</h2>  
+                <button class="modal-close" onclick="closeModal('belajar-kelompok')">  
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                        <line x1="18" y1="6" x2="6" y2="18"></line>  
+                        <line x1="6" y1="6" x2="18" y2="18"></line>  
+                    </svg>  
+                </button>  
+            </div>  
+            <div class="modal-body">  
+                <p>Belajar kelompok bisa meningkatkan pemahaman melalui diskusi, tapi butuh struktur. Ini panduan lengkap.</p>  
+                <h3>Manfaat Belajar Kelompok</h3>  
+                <p>Meningkatkan retensi 50% melalui teaching others (Protege Effect). Diversitas perspektif, motivasi sosial, dan pembagian beban.</p>  
+                <h3>Cara Membentuk Kelompok</h3>  
+                <h4>1. Pilih Anggota</h4>  
+                <p>3-5 orang dengan level serupa tapi kekuatan berbeda. Gunakan IKI grup untuk rekrut.</p>  
+                <h4>2. Atur Agenda</h4>  
+                <p>Set topik, durasi (1-2 jam), dan role: facilitator, note-taker, time-keeper.</p>  
+                <h4>3. Teknik Diskusi</h4>  
+                <p>Gunakan round-robin: tiap orang jawab pertanyaan bergantian. Atau case study: analisis masalah real.</p>  
+                <h3>Strategi Lanjutan</h3>  
+                <ul>  
+                    <li><strong>Collaborative Tools:</strong> Google Docs untuk edit bersama, Zoom untuk virtual, Quizlet untuk quiz grup.</li>  
+                    <li><strong>Mengatasi Konflik:</strong> Set ground rules awal, seperti no interruption, fokus pada ide bukan orang.</li>  
+                    <li><strong>Evaluasi:</strong> Akhir sesi, rating 1-10 dan feedback untuk improve.</li>  
+                </ul>  
+                <p>Kombinasikan dengan individual prep: baca materi dulu sebelum meet untuk diskusi mendalam.</p>  
+            </div>  
+        </div>  
+    </div>  
+
+    <div class="modal" id="pembelajaran-online">  
+        <div class="modal-content">  
+            <div class="modal-header">  
+                <h2 class="modal-title">Pembelajaran Online Sukses</h2>  
+                <button class="modal-close" onclick="closeModal('pembelajaran-online')">  
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                        <line x1="18" y1="6" x2="6" y2="18"></line>  
+                        <line x1="6" y1="6" x2="18" y2="18"></line>  
+                    </svg>  
+                </button>  
+            </div>  
+            <div class="modal-body">  
+                <p>Dalam era digital, belajar online dominan. Ini tips kompleks untuk maksimalkan.</p>  
+                <h3>Setup Lingkungan</h3>  
+                <p>Ruang khusus tanpa distraksi, ergonomis (kursi baik, layar mata level). Gunakan blue-light filter app seperti f.lux.</p>  
+                <h3>Teknik Belajar Online</h3>  
+                <h4>1. Active Engagement</h4>  
+                <p>Jangan pasif tonton video; pause, note, summarize. Gunakan Coursera atau Khan Academy dengan quiz interaktif.</p>  
+                <h4>2. Time Management Digital</h4>  
+                <p>Gunakan Pomodoro dengan app Focus Booster. Block distraksi dengan Freedom atau StayFocusd.</p>  
+                <h4>3. Kolaborasi Virtual</h4>  
+                <p>Gunakan Discord atau Slack untuk grup study, share screen untuk tutor.</p>  
+                <h3>Strategi Lanjutan</h3>  
+                <ul>  
+                    <li><strong>Blended Learning:</strong> Gabung online dengan offline, seperti print notes dari video.</li>  
+                    <li><strong>Analytics:</strong> Track progress di platform seperti edX, adjust berdasarkan data.</li>  
+                    <li><strong>Mengatasi Zoom Fatigue:</strong> Break 5 min setiap 45 min, gunakan audio-only jika可能.</li>  
+                </ul>  
+                <p>Evaluasi: weekly review engagement metrics, adjust strategy.</p>  
+            </div>  
+        </div>  
+    </div>  
+
+    <div class="modal" id="kesehatan-belajar">  
+        <div class="modal-content">  
+            <div class="modal-header">  
+                <h2 class="modal-title">Kesehatan Saat Belajar</h2>  
+                <button class="modal-close" onclick="closeModal('kesehatan-belajar')">  
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                        <line x1="18" y1="6" x2="6" y2="18"></line>  
+                        <line x1="6" y1="6" x2="18" y2="18"></line>  
+                    </svg>  
+                </button>  
+            </div>  
+            <div class="modal-body">  
+                <p>Belajar efektif butuh tubuh dan pikiran sehat. Ini panduan holistik.</p>  
+                <h3>Aspek Fisik</h3>  
+                <p>Tidur 7-9 jam: siklus REM untuk memori. Olahraga 30 min/hari tingkatkan aliran darah ke otak. Diet: makanan otak seperti ikan, nut, berry.</p>  
+                <h3>Aspek Mental</h3>  
+                <h4>1. Mindfulness</h4>  
+                <p>Meditasi 10 min/hari kurangi stres, app Headspace. Teknik breathing 4-7-8 untuk fokus instan.</p>  
+                <h4>2. Burnout Prevention</h4>  
+                <p>Kenali tanda: kelelahan, iritabilitas. Gunakan rule 20-20-20 untuk mata: setiap 20 min lihat 20 ft selama 20 detik.</p>  
+                <h4>3. Emotional Intelligence</h4>  
+                <p>Manage emosi: journaling untuk refleksi, positive affirmation untuk self-talk.</p>  
+                <h3>Strategi Lanjutan</h3>  
+                <ul>  
+                    <li><strong>Hydration Tracking:</strong> Minum 2L air/hari, dehidrasi turunkan kognisi 20%.</li>  
+                    <li><strong>Social Support:</strong> Diskusi di IKI untuk reduce isolasi.</li>  
+                    <li><strong>Biohacking:</strong> Cold shower untuk alertness, nootropics alami seperti green tea.</li>  
+                </ul>  
+                <p>Monitor dengan app seperti MyFitnessPal untuk integrasi kesehatan-belajar.</p>  
+            </div>  
+        </div>  
+    </div>  
+
+    <div class="modal" id="teknik-pomodoro">  
+        <div class="modal-content">  
+            <div class="modal-header">  
+                <h2 class="modal-title">Teknik Pomodoro</h2>  
+                <button class="modal-close" onclick="closeModal('teknik-pomodoro')">  
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                        <line x1="18" y1="6" x2="6" y2="18"></line>  
+                        <line x1="6" y1="6" x2="18" y2="18"></line>  
+                    </svg>  
+                </button>  
+            </div>  
+            <div class="modal-body">  
+                <p>Teknik Pomodoro: 25 min fokus, 5 min break. Ini variasi kompleks.</p>  
+                <h3>Dasar dan Modifikasi</h3>  
+                <p>Standar: 4 pomodoro lalu long break 15-30 min. Modifikasi: 50/10 untuk tugas intensif, atau 90/20 berdasarkan ultradian rhythm.</p>  
+                <h3>Implementasi</h3>  
+                <h4>1. Persiapan</h4>  
+                <p>Pilih tugas tunggal, set timer (app Tomato Timer).</p>  
+                <h4>2. Selama Fokus</h4>  
+                <p>No interruption: silent phone, close tabs.</p>  
+                <h4>3. Break Efektif</h4>  
+                <p>Stretch, walk, hydrate. Hindari screen.</p>  
+                <h3>Strategi Lanjutan</h3>  
+                <ul>  
+                    <li><strong>Task Decomposition:</strong> Bagi tugas besar ke pomodoro-sized chunks.</li>  
+                    <li><strong>Tracking:</strong> Log completed pomodoro, analyze productivity trends.</li>  
+                    <li><strong>Integration:</strong> Kombinasi dengan GTD (Getting Things Done) untuk task list.</li>  
+                </ul>  
+                <p>Penelitian: tingkatkan fokus 25%, kurangi fatigue.</p>  
+            </div>  
+        </div>  
+    </div>  
+
+    <div class="modal" id="mind-mapping">  
+        <div class="modal-content">  
+            <div class="modal-header">  
+                <h2 class="modal-title">Mind Mapping untuk Belajar</h2>  
+                <button class="modal-close" onclick="closeModal('mind-mapping')">  
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                        <line x1="18" y1="6" x2="6" y2="18"></line>  
+                        <line x1="6" y1="6" x2="18" y2="18"></line>  
+                    </svg>  
+                </button>  
+            </div>  
+            <div class="modal-body">  
+                <p>Mind map: visual representasi ide dengan cabang. Ideal untuk otak visual.</p>  
+                <h3>Cara Membuat</h3>  
+                <p>Pusat topik, cabang utama sub-topik, sub-cabang detail. Gunakan warna, gambar untuk engagement.</p>  
+                <h3>Aplikasi</h3>  
+                <h4>1. Untuk Revisi</h4>  
+                <p>Map seluruh bab, hubungkan konsep cross-chapter.</p>  
+                <h4>2. Brainstorming</h4>  
+                <p>Untuk esai: ide utama, supporting evidence.</p>  
+                <h4>3. Tools</h4>  
+                <p>MindMeister atau XMind untuk digital, kolaboratif.</p>  
+                <h3>Strategi Lanjutan</h3>  
+                <ul>  
+                    <li><strong>Hierarchical Structure:</strong> Level 1-3 untuk kompleksitas.</li>  
+                    <li><strong>Integration with Notes:</strong> Konversi linear notes ke map untuk better recall.</li>  
+                    <li><strong>Research Backed:</strong> Tingkatkan memori 10-15% (Buzan study).</li>  
+                </ul>  
+                <p>Kombinasikan dengan spaced review map.</p>  
+            </div>  
+        </div>  
+    </div>  
+
+    <div class="modal" id="belajar-aktif">  
+        <div class="modal-content">  
+            <div class="modal-header">  
+                <h2 class="modal-title">Belajar Aktif</h2>  
+                <button class="modal-close" onclick="closeModal('belajar-aktif')">  
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                        <line x1="18" y1="6" x2="6" y2="18"></line>  
+                        <line x1="6" y1="6" x2="18" y2="18"></line>  
+                    </svg>  
+                </button>  
+            </div>  
+            <div class="modal-body">  
+                <p>Belajar aktif: engage langsung dengan materi, bukan pasif baca.</p>  
+                <h3>Metode</h3>  
+                <p>Summarize, question, teach, apply. Pyramid of Learning: teaching others retensi 90%.</p>  
+                <h3>Teknik</h3>  
+                <h4>1. SQ3R</h4>  
+                <p>Survey, Question, Read, Recite, Review. Untuk teks buku.</p>  
+                <h4>2. Problem-Solving</h4>  
+                <p>Untuk STEM: solve soal tanpa lihat jawaban dulu.</p>  
+                <h4>3. Debate Internal</h4>  
+                <p>Argumen pro-kontra konsep untuk pemahaman dalam.</p>  
+                <h3>Strategi Lanjutan</h3>  
+                <ul>  
+                    <li><strong>Metacognition:</strong> Pikir tentang pikiran Anda, assess pemahaman.</li>  
+                    <li><strong>Project-Based:</strong> Buat project real dari pelajaran.</li>  
+                    <li><strong>Feedback Loop:</strong> Test, correct, retest.</li>  
+                </ul>  
+                <p>Hasil: improve grades 20-30%.</p>  
+            </div>  
+        </div>  
+    </div>  
+
+    <div class="modal" id="mengatasi-stres">  
+        <div class="modal-content">  
+            <div class="modal-header">  
+                <h2 class="modal-title">Mengatasi Stres Belajar</h2>  
+                <button class="modal-close" onclick="closeModal('mengatasi-stres')">  
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">  
+                        <line x1="18" y1="6" x2="6" y2="18"></line>  
+                        <line x1="6" y1="6" x2="18" y2="18"></line>  
+                    </svg>  
+                </button>  
+            </div>  
+            <div class="modal-body">  
+                <p>Stres bisa hambat belajar. Ini strategi berbasis evidens.</p>  
+                <h3>Identifikasi Pemicu</h3>  
+                <p>Deadline, overload, perfeksionisme. Track dengan stres journal.</p>  
+                <h3>Teknik Coping</h3>  
+                <h4>1. Progressive Muscle Relaxation</h4>  
+                <p>Tegang-relax otot grup, kurangi tension fisik.</p>  
+                <h4>2. Cognitive Restructuring</h4>  
+                <p>Ubah "Saya gagal" jadi "Ini kesempatan belajar".</p>  
+                <h4>3. Time-Out</h4>  
+                <p>Break nature walk, mindfulness app Calm.</p>  
+                <h3>Strategi Lanjutan</h3>  
+                <ul>  
+                    <li><strong>Resilience Building:</strong> Practice gratitude daily.</li>  
+                    <li><strong>Support System:</strong> Talk to mentor di IKI.</li>  
+                    <li><strong>Professional Help:</strong> Jika kronis, konsultasi psikolog.</li>  
+                </ul>  
+                <p>Penelitian: meditasi kurangi stres 40% (Harvard study).</p>  
+            </div>  
+        </div>  
+    </div>  
+
+    <script>  
+        const hamburger = document.getElementById('hamburger');  
+        const sidebar = document.getElementById('sidebar');  
+        const overlay = document.getElementById('overlay');  
+        const joinBtn = document.getElementById('joinBtn');  
+        const footerJoinBtn = document.getElementById('footerJoinBtn');  
+        const whatsappLink = '<?php echo $whatsapp_link; ?>';  
+
+        hamburger.addEventListener('click', () => {  
+            hamburger.classList.toggle('active');  
+            sidebar.classList.toggle('active');  
+            overlay.classList.toggle('active');  
+        });  
+
+        overlay.addEventListener('click', () => {  
+            hamburger.classList.remove('active');  
+            sidebar.classList.remove('active');  
+            overlay.classList.remove('active');  
+        });  
+
+        document.querySelectorAll('.card').forEach(card => {  
+            card.addEventListener('click', () => {  
+                const modalId = card.getAttribute('data-modal');  
+                document.getElementById(modalId).classList.add('active');  
+                document.body.style.overflow = 'hidden';  
+            });  
+        });  
+
+        function closeModal(id) {  
+            document.getElementById(id).classList.remove('active');  
+            document.body.style.overflow = '';  
+        }  
+
+        document.querySelectorAll('.modal').forEach(modal => {  
+            modal.addEventListener('click', (e) => {  
+                if (e.target === modal) {  
+                    modal.classList.remove('active');  
+                    document.body.style.overflow = '';  
+                }  
+            });  
+        });  
+
+        joinBtn.addEventListener('click', (e) => {  
+            e.preventDefault();  
+            window.open(whatsappLink, '_blank');  
+        });  
+
+        footerJoinBtn.addEventListener('click', (e) => {  
+            e.preventDefault();  
+            window.open(whatsappLink, '_blank');  
+        });  
+
+        let touchStartY = 0;  
+        document.addEventListener('touchstart', (e) => {  
+            touchStartY = e.touches[0].clientY;  
+        }, { passive: true });  
+
+        document.addEventListener('touchmove', (e) => {  
+            const touchEndY = e.touches[0].clientY;  
+            const sidebar = document.getElementById('sidebar');  
+            if (sidebar.classList.contains('active') && touchEndY < touchStartY - 50) {  
+                sidebar.classList.remove('active');  
+                overlay.classList.remove('active');  
+                hamburger.classList.remove('active');  
+            }  
+        }, { passive: true });  
+    </script>  
+</body>  
+</html>
